@@ -1,0 +1,30 @@
+{
+  "name": "advent-of-code-solutions",
+  "version": "1.0.0",
+  "description": "This repo contains my solutions to the annual Advent of Code Challenges",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon ./index.js",
+    "serve": "node ./index.js",
+    "test": "echo \"Error: notest specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Matthewenderle/Advent-of-Code-Solutions.git"
+  },
+  "author": "matthewenderle",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Matthewenderle/Advent-of-Code-Solutions/issues"
+  },
+  "homepage": "https://github.com/Matthewenderle/Advent-of-Code-Solutions#readme",
+  "dependencies": {
+    "@babel/core": "^7.23.7",
+    "@babel/eslint-parser": "^7.23.3",
+    "nodemon": "^3.1.2",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "prettier": "^3.2.5"
+  }
+}
