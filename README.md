@@ -15,6 +15,7 @@ If any solutions are missing from this repo but they are listed in the leaderboa
 | Day | Time     | Rank  | Score | Time     | Rank  | Score |
 |  1  | 17:45:20 | 95128 |   0   | 18:02:14 | 89915 |   0   |
 |  6  | 06:07:18 | 32027 |   0   | 07:55:50 | 20719 |   0   |
+|  7  | 09:04:11 | 32314 |   0   | 09:07:28 | 29414 |   0   |
 
 ## My Leaderboard (2023)
 
@@ -80,4 +81,22 @@ npm install
 
 npm run dev <year>/<day number> -dev
 #eg: npm run dev 2024/2 -dev
+```
+
+#### Running Test/Real Inputs
+
+You can disable execution of either or both the test and real data by changing the state of the mode in the top of the `/year/day/index.js` file. It will skip the ones that are set to false.
+
+```js
+const modes = {
+  dev: true,
+  real: false,
+};
+```
+
+You can also place in the correct answers for the test input into the same area.
+
+```js
+const correctDevPart1 = 41;
+const correctDevPart2 = 6;
 ```
