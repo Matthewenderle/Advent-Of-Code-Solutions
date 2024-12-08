@@ -118,17 +118,24 @@ export const sum = (array) => {
  * @param {(string|Array<any>)} target - The target value to find. Can be a string or an array of values.
  * @returns {Object|null} An object with properties {x, y} representing the coordinates of the target value, or null if not found.
  */
-export const findCoordinates = (array, target) => {
+export const findCoordinates = (array, target, start = 0) => {
   if (!Array.isArray(array) || !array.every(Array.isArray)) {
     throw new Error('Invalid Array. Must be a 2D array.');
   }
 
-  for (let y = 0; y < array.length; y++) {
-    for (let x = 0; x < array[y].length; x++) {
-      const cell = array[y][x];
-      if ((typeof target === 'string' && cell === target) || (Array.isArray(target) && target.includes(cell))) {
-        return { x, y };
-      }
+  const totalItems = array.length * array[0].length;
+
+  if (start < 0 || start >= totalItems) {
+    throw new Error('Start index out of bounds.');
+  }
+
+  for (let i = start; i < totalItems; i++) {
+    const y = Math.floor(i / array[0].length);
+    const x = i % array[0].length;
+    const cell = array[y][x];
+
+    if ((typeof target === 'string' && cell === target) || (Array.isArray(target) && target.includes(cell))) {
+      return { x, y };
     }
   }
 
@@ -186,6 +193,15 @@ export const getNthItem = (array, n, wrapping = false) => {
   return array[row][col];
 };
 
+/**
+ * Moves to the next coordinate in a 2D array.
+ *
+ * @param {Array<Array<any>>} array - The 2D array to navigate.
+ * @param {(Object|Array)} current - The current coordinates. Can be an object with properties {x, y} or an array [x, y].
+ * @param {boolean} [wrapping=false] - Whether to wrap to the next row if the end of a row is reached. Defaults to false.
+ * @returns {Object|null} An object with properties {x, y} representing the next coordinates, or null if the end of the array is reached and wrapping is false.
+ * @throws {Error} If the current coordinates are null, not an object or array, or if the array is not a 2D array.
+ */
 export const getNthCoordinate = (array, n, wrapping = false) => {
   if (!Array.isArray(array) || !array.every(Array.isArray)) {
     throw new Error('Invalid Array. Must be a 2D array.');
@@ -205,4 +221,75 @@ export const getNthCoordinate = (array, n, wrapping = false) => {
   const col = n % array[0].length;
 
   return { x: col, y: row };
+};
+
+/**
+ * Calculates the coordinates of a line between two points on a 2D array.
+ *
+ * @param {Object} coord1 - The starting coordinate.
+ * @param {number} coord1.x - The x-coordinate of the starting point.
+ * @param {number} coord1.y - The y-coordinate of the starting point.
+ * @param {Object} coord2 - The ending coordinate.
+ * @param {number} coord2.x - The x-coordinate of the ending point.
+ * @param {number} coord2.y - The y-coordinate of the ending point.
+ * @param {Array<Array<any>>} array - The 2D array representing the grid.
+ * @param {boolean} [between=false] - If true, only include coordinates between the start and end points.
+ * @returns {Array<Object>} An array of coordinates representing the line.
+ */
+export const getLineCoordinates = (coord1, coord2, array, between = false) => {
+  const coordinates = [];
+  const { x: x1, y: y1 } = coord1;
+  const { x: x2, y: y2 } = coord2;
+  const dx = Math.abs(x2 - x1);
+  const dy = Math.abs(y2 - y1);
+  const sx = x1 < x2 ? 1 : -1;
+  const sy = y1 < y2 ? 1 : -1;
+  let err = dx - dy;
+
+  let x = x1;
+  let y = y1;
+
+  while (true) {
+    if (x >= 0 && x < array[0].length && y >= 0 && y < array.length) {
+      coordinates.push({ x, y });
+    }
+    if (x === x2 && y === y2) break;
+    const e2 = 2 * err;
+    if (e2 > -dy) {
+      err -= dy;
+      x += sx;
+    }
+    if (e2 < dx) {
+      err += dx;
+      y += sy;
+    }
+  }
+
+  if (!between) {
+    let tempX = x1;
+    let tempY = y1;
+
+    // Look backwards
+    while (tempX >= 0 && tempX < array[0].length && tempY >= 0 && tempY < array.length) {
+      tempX -= sx;
+      tempY -= sy;
+      if (tempX >= 0 && tempX < array[0].length && tempY >= 0 && tempY < array.length) {
+        coordinates.unshift({ x: tempX, y: tempY });
+      }
+    }
+
+    tempX = x2;
+    tempY = y2;
+
+    // Look forwards
+    while (tempX >= 0 && tempX < array[0].length && tempY >= 0 && tempY < array.length) {
+      tempX += sx;
+      tempY += sy;
+      if (tempX >= 0 && tempX < array[0].length && tempY >= 0 && tempY < array.length) {
+        coordinates.push({ x: tempX, y: tempY });
+      }
+    }
+  }
+
+  return coordinates;
 };
